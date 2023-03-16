@@ -12,15 +12,7 @@ class App(customtkinter.CTk):
         self.textbox_password.delete("1.0", "end")
 
         # get password length
-        password_length = self.entry_length.get()
-
-        # check if password length is a number
-        if password_length.isnumeric():
-            password_length = int(password_length)
-        else:
-            #self.label_password.set_text("Password length must be a number")
-            self.textbox_password.insert("end", "Password length must be a number")
-            return
+        password_length = int(self.slider_length.get())
 
         # check if password length is between 4 and 128
         if password_length < 4 or password_length > 128:
@@ -73,25 +65,38 @@ class App(customtkinter.CTk):
         # show password
         self.textbox_password.insert("end", password)
 
+    def slider_length_changed(self, value):
+        self.textbox_length.delete("1.0", "end")
+        #convert value to int and then to string
+        v = str(int(value))
+        self.textbox_length.insert("end", v)
+
     def __init__(self):
 
         super().__init__()
 
         # configure window
         self.title("Password Generator - by AleDev")
-        self.geometry(f"{500}x{450}")
+        self.geometry(f"{500}x{550}")
         self.resizable(False, False)
 
         # create widgets
         self.label_title = customtkinter.CTkLabel(self, text="Password Generator", font=("Arial", 20))
         self.label_title.pack(pady=10, padx=10, fill="x")
 
+        # create label for settings
         self.label_settings = customtkinter.CTkLabel(self, text="Settings", font=("Arial", 18))
         self.label_settings.pack(pady=10, padx=10, fill="x")
 
-        # create text entry for password length
-        self.entry_length = customtkinter.CTkEntry(self, width=10,  placeholder_text="Password length...")
-        self.entry_length.pack(pady=10, padx=10, fill="x")
+        # create label for password length
+        self.textbox_length = customtkinter.CTkTextbox(self, width=10, height=1, font=customtkinter.CTkFont(size=12, weight="bold"))
+        self.textbox_length.pack(pady=10, padx=10, fill="x")
+        self.textbox_length.insert("end", "4")
+
+        # create entry for password length
+        self.slider_length = customtkinter.CTkSlider(self, from_=4, to=128, command=self.slider_length_changed)
+        self.slider_length.pack(pady=10, padx=10, fill="x")
+        self.slider_length.set(4)
 
         # create checkbox for uppercase letters
         self.checkbox_uppercase = customtkinter.CTkCheckBox(self, text="Uppercase Letters")
@@ -114,9 +119,13 @@ class App(customtkinter.CTk):
         self.button_generate.pack(pady=10, padx=10, fill="x")
 
         # create label to show password
-        self.textbox_password = customtkinter.CTkTextbox(self, width=200, height=1000, font=customtkinter.CTkFont(size=12, weight="bold"))
+        self.textbox_password = customtkinter.CTkTextbox(self, width=200, height=70, font=customtkinter.CTkFont(size=12, weight="bold"))
         self.textbox_password.pack(pady=10, padx=10, fill="x")
         self.textbox_password.insert("end", "Generated Password by AleDev")
+
+        # create button to copy password
+        self.button_copy = customtkinter.CTkButton(self, text="Copy Password", command=lambda: self.clipboard_clear() or self.clipboard_append(self.textbox_password.get("1.0", "end")))
+        self.button_copy.pack(pady=9, padx=9, fill="x")
 
 if __name__ == "__main__":
     app = App()
