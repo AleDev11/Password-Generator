@@ -95,7 +95,7 @@ class App(customtkinter.CTk):
         # create entry for password length
         self.slider_length = customtkinter.CTkSlider(self, from_=4, to=128, command=self.slider_length_changed)
         self.slider_length.pack(pady=10, padx=10, fill="x")
-        self.slider_length.set(4)
+        self.slider_length.set(16)
 
         # create checkbox for uppercase letters
         self.checkbox_uppercase = customtkinter.CTkCheckBox(self, text="Uppercase Letters")
